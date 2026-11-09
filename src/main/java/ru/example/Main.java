@@ -55,7 +55,7 @@ public class Main {
         }));
     }
 
-    public static List<CompletableFuture<List<Long>>> start(long start, long end) {
+    public static @NonNull List<CompletableFuture<List<Long>>> start(long start, long end) {
         List<CompletableFuture<List<Long>>> outputs = new ArrayList<>();
         long max = start;
         while (true) {
