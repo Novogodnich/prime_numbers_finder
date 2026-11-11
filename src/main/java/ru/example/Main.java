@@ -2,33 +2,36 @@ package ru.example;
 
 import lombok.NonNull;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
 public class Main {
+    private final static BigInteger THOUSAND = new BigInteger("1000");
+    private final static BigInteger THREE = new BigInteger("3");
     static void main() {
         System.out.println("Enter start and end of searching separated by spaces.");
 
         Scanner scn = new Scanner(System.in);
 
         String input = scn.nextLine();
-        long start = Long.parseLong(input.split(" ")[0]);
-        long end = Long.parseLong(input.split(" ")[1]);
+        BigInteger start = new BigInteger(input.split(" ")[0]);
+        BigInteger end = new BigInteger(input.split(" ")[1]);
 
-        if (start > end) throw new IllegalArgumentException("start cannot be > end");
-        if (start < 0) throw new IllegalArgumentException("start or end cannot be < 0");
-        if (start % 2 == 0) start++;
-        if (start == 1) start += 2;
+        if (start.compareTo(end) > 0) throw new IllegalArgumentException("start cannot be > end");
+        if (start.compareTo(BigInteger.ZERO) < 0) throw new IllegalArgumentException("start or end cannot be < 0");
+        if (start.mod(BigInteger.TWO).equals(BigInteger.ZERO)) start = start.add(BigInteger.ONE);
+        if (start.equals(BigInteger.ONE)) start = start.add(BigInteger.TWO);
 
         System.out.println("Starting!");
         long startMs = System.currentTimeMillis();
 
         var outputs = start(start, end);
 
-        for (CompletableFuture<List<Long>> output : outputs) {
-            for (Long i : output.join()) {
+        for (CompletableFuture<List<BigInteger>> output : outputs) {
+            for (BigInteger i : output.join()) {
                 System.out.println(i);
             }
         }
@@ -36,13 +39,13 @@ public class Main {
         System.out.println("The search took " + (System.currentTimeMillis() - startMs) + " ms");
     }
 
-    private static void work(@NonNull List<CompletableFuture<List<Long>>> outputs, final long start, final long end) {
+    private static void work(@NonNull List<CompletableFuture<List<BigInteger>>> outputs, final BigInteger start, final BigInteger end) {
         outputs.add(CompletableFuture.supplyAsync(() -> {
-            List<Long> output = new ArrayList<>();
-            for (long i = start; i <= end; i+=2){
+            List<BigInteger> output = new ArrayList<>();
+            for (BigInteger i = start; i.compareTo(end) < 1; i = i.add(BigInteger.TWO)) {
                 boolean ok = true;
-                for (long j = 3; j * j <= i; j+=2) {
-                    if (i%j == 0 && i != j) {
+                for (BigInteger j = THREE; j.multiply(j).compareTo(i) < 1; j = j.add(BigInteger.TWO)) {
+                    if (i.mod(j).equals(BigInteger.ZERO) && !i.equals(j)) {
                         ok = false;
                         break;
                     }
@@ -55,13 +58,13 @@ public class Main {
         }));
     }
 
-    public static @NonNull List<CompletableFuture<List<Long>>> start(long start, long end) {
-        List<CompletableFuture<List<Long>>> outputs = new ArrayList<>();
-        long max = start;
+    public static @NonNull List<CompletableFuture<List<BigInteger>>> start(final BigInteger start, final BigInteger end) {
+        List<CompletableFuture<List<BigInteger>>> outputs = new ArrayList<>();
+        BigInteger max = start;
         while (true) {
-            if (max + 1000 < end) {
-                work(outputs, max, max + 1000);
-                max += 1000;
+            if (max.add(THOUSAND).compareTo(end) < 0) {
+                work(outputs, max, max.add(THOUSAND));
+                max = max.add(THOUSAND);
             } else {
                 work(outputs, max, end);
                 break;

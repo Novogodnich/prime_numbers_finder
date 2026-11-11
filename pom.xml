@@ -6,7 +6,7 @@
 
     <groupId>ru.example</groupId>
     <artifactId>maths</artifactId>
-    <version>1.0</version>
+    <version>1.2</version>
 
     <properties>
         <maven.compiler.source>27</maven.compiler.source>
