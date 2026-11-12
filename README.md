@@ -6,6 +6,7 @@ This is a utility which finds prime numbers in diapason.
  - Supports diapasons
  - Tested on very big numbers(from 1 000 000 000)
  - Tests before compile that checks that program works normally
+ - Big numbers support(max is $2^{68719476736}$)
 
 ## Speed
 
@@ -16,9 +17,9 @@ Tested on i5-12600.
 | **Start** | **End**       | **Time in ms** |
 |-----------|---------------|----------------|
 | 1         | 1 000 000     | 117            |
-| 1         | 10 000 000    | 879            |
-| 1         | 100 000 000   | 13 691         |
-| 1 000 000 | 1 000 000 000 | 223 405        |
+| 1         | 10 000 000    | 901            |
+| 1         | 100 000 000   | 12 157         |
+| 1 | 1 000 000 000 | 392 547       |
 
 
 ## Why this program?
